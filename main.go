@@ -58,7 +58,7 @@ func opsGenieHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/alertmanager", alertManagerHandler)
-	mux.HandleFunc("/opsgenie", opsGenieHandler)
+	mux.HandleFunc("/opsgenie", opsgenie.handler)
 	log.Println("Started api server")
 
 	err := http.ListenAndServe(":4000", mux)
