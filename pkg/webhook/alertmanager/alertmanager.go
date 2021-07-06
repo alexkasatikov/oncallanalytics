@@ -28,7 +28,7 @@ type Group struct {
 	} `json:"alerts"`
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/alertmanager" {
 		http.NotFound(w, r)
 		return
