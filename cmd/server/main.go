@@ -7,7 +7,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/alertmanager", alertmanager.Handler)
+	mux.HandleFunc("/alertmanager", server.alertmanagerHandler)
 	mux.HandleFunc("/opsgenie", server.opsgenieHandler)
 	log.Println("Started api server")
 
