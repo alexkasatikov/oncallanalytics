@@ -1,4 +1,4 @@
-package alertmanager
+package server
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ type Group struct {
 	} `json:"alerts"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func alertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/alertmanager" {
 		http.NotFound(w, r)
 		return
