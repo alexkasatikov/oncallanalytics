@@ -1,4 +1,4 @@
-package webhookserver
+package kserver
 
 import (
 	"encoding/json"

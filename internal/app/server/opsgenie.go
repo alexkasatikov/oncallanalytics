@@ -1,4 +1,4 @@
-package webhookserver
+package server
 
 import (
 	"log"
