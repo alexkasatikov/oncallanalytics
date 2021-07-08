@@ -9,7 +9,8 @@ import (
 )
 
 func InsertAlert() {
-	conn, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	//conn, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	conn, err := pgxpool.Connect(context.Background(), "postgres://localhost/seshat")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

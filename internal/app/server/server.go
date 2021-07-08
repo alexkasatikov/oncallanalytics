@@ -2,23 +2,24 @@ package server
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/alexkasatikov/oncallstats/internal/webhook"
 	"github.com/namsral/flag"
 )
 
-type Config struct {
-	BindPort int
-}
-
-func NewConfig() Config {
-	config := Config{}
-	config.BindPort = 8080
-	return config
-}
-
 func InitServer() {
 	config := NewConfig()
-	flag.IntVar(&config.BindPort, "port", config.BindPort, "Port number")
+	flag.StringVar(&config.ListenPort, "listen-port", config.ListenPort, "Port number to bind on")
+	flag.StringVar(&config.ListenAddress, "listen-address", config.ListenAddress, "Address to bind on")
+	flag.StringVar(&config.DatabaseURL, "database", config.DatabaseURL, "Database URL in postgres format")
+	flag.StringVar(&config.LogLevel, "log-level", config.LogLevel, "Log level")
+
 	flag.Parse()
-	log.Println("You seem to prefer", config.BindPort)
+	mux := http.NewServeMux()
+	//mux.HandleFunc("/alertmanager", AlertmanagerHandler)
+	mux.HandleFunc("/opsgenie", webhook.OpsgenieHandler)
+
+	err := http.ListenAndServe(config.ListenAddress+":"+config.ListenPort, mux)
+	log.Fatal(err)
 }
