@@ -14,10 +14,14 @@ func InitServer() {
 	flag.StringVar(&config.ListenAddress, "listen-address", config.ListenAddress, "Address to bind on")
 	flag.StringVar(&config.DatabaseURL, "database", config.DatabaseURL, "Database URL in postgres format")
 	flag.StringVar(&config.LogLevel, "log-level", config.LogLevel, "Log level")
-
 	flag.Parse()
+
+	// Inject variables into another package
+	var DatabaseURL = config.DatabaseURL
+	webhook.DatabaseURL = DatabaseURL
+
 	mux := http.NewServeMux()
-	//mux.HandleFunc("/alertmanager", AlertmanagerHandler)
+	mux.HandleFunc("/alertmanager", webhook.AlertmanagerHandler)
 	mux.HandleFunc("/opsgenie", webhook.OpsgenieHandler)
 
 	err := http.ListenAndServe(config.ListenAddress+":"+config.ListenPort, mux)

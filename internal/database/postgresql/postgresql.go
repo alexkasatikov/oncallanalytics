@@ -8,9 +8,8 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func InsertAlert() {
-	//conn, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	conn, err := pgxpool.Connect(context.Background(), "postgres://localhost/seshat")
+func InsertAlert(d string) {
+	conn, err := pgxpool.Connect(context.Background(), d)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
@@ -24,5 +23,5 @@ func InsertAlert() {
 	var id uint64
 	err = row.Scan(&id)
 
-	fmt.Println("111")
+	fmt.Println("done")
 }

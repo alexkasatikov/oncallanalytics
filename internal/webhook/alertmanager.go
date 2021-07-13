@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/alexkasatikov/oncallstats/internal/database/postgresql"
 )
 
 type Group struct {
@@ -46,6 +48,8 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 		//fmt.Fprintf(w, group.)
 		//fmt.Println("StartsAt: ", group.Alerts[0].StartsAt)
 		fmt.Println("EndsAt: ", group.Alerts[0].EndsAt)
+
+		postgresql.InsertAlert(DatabaseURL)
 	default:
 		log.Printf("Received %s request", r.Method)
 	}
