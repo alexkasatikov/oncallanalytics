@@ -24,6 +24,8 @@ func InitServer() {
 	mux.HandleFunc("/alertmanager", webhook.AlertmanagerHandler)
 	mux.HandleFunc("/opsgenie", webhook.OpsgenieHandler)
 
+	log.Println("Server started")
+
 	err := http.ListenAndServe(config.ListenAddress+":"+config.ListenPort, mux)
 	log.Fatal(err)
 }

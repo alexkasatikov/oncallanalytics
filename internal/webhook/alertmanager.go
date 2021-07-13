@@ -2,7 +2,6 @@ package webhook
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -32,6 +31,7 @@ type Data struct {
 }
 
 func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Enter handler")
 	if r.URL.Path != "/alertmanager" {
 		http.NotFound(w, r)
 		return
@@ -39,6 +39,7 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":
+		log.Println("Received POST request")
 		var group Group
 		err := json.NewDecoder(r.Body).Decode(&group)
 		if err != nil {
@@ -48,7 +49,8 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Fprintf(w, group.)
 		//fmt.Println("StartsAt: ", group.Alerts[0].StartsAt)
-		fmt.Println(group)
+		log.Println(group)
+		log.Println("Done")
 
 		//for _, alert := range group.Alerts {
 		//	fmt.Println(alert.Status)
