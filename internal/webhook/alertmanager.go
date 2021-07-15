@@ -27,11 +27,14 @@ type Group struct {
 	} `json:"alerts"`
 }
 
-type Data struct {
+type Alert struct {
+	Fingerprint string
+	Status      string
+	StartsAt    time.Time
+	EndsAt      time.Time
 }
 
 func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Enter handler")
 	if r.URL.Path != "/alertmanager" {
 		http.NotFound(w, r)
 		return
@@ -47,16 +50,28 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//fmt.Fprintf(w, group.)
-		//fmt.Println("StartsAt: ", group.Alerts[0].StartsAt)
-		log.Println(group)
+		if group.Status == "firing" {
+			for _, a := range group.Alerts {
+				alert := Alert{
+					Status:      "firing",
+					StartsAt:    a.StartsAt,
+					EndsAt:      a.EndsAt,
+					Fingerprint: a.Fingerprint,
+				}
+				InsertNewAlert(DatabaseURL, alert)
+			}
+		} else {
+			for _, a := range group.Alerts {
+				alert := Alert{
+					Status:      "resolved",
+					EndsAt:      a.EndsAt,
+					Fingerprint: a.Fingerprint,
+				}
+				ResolveAlert(DatabaseURL, alert)
+			}
+		}
+
 		log.Println("Done")
-
-		//for _, alert := range group.Alerts {
-		//	fmt.Println(alert.Status)
-		//}
-
-		//postgresql.InsertAlert(DatabaseURL)
 	default:
 		log.Printf("Received %s request", r.Method)
 	}
