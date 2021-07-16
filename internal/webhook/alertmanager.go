@@ -42,7 +42,6 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":
-		log.Println("Received POST request")
 		var group Group
 		err := json.NewDecoder(r.Body).Decode(&group)
 		if err != nil {
@@ -50,28 +49,15 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if group.Status == "firing" {
-			for _, a := range group.Alerts {
-				alert := Alert{
-					Status:      "firing",
-					StartsAt:    a.StartsAt,
-					EndsAt:      a.EndsAt,
-					Fingerprint: a.Fingerprint,
-				}
-				InsertNewAlert(DatabaseURL, alert)
+		for _, a := range group.Alerts {
+			alert := Alert{
+				Status:      a.Status,
+				StartsAt:    a.StartsAt,
+				EndsAt:      a.EndsAt,
+				Fingerprint: a.Fingerprint,
 			}
-		} else {
-			for _, a := range group.Alerts {
-				alert := Alert{
-					Status:      "resolved",
-					EndsAt:      a.EndsAt,
-					Fingerprint: a.Fingerprint,
-				}
-				ResolveAlert(DatabaseURL, alert)
-			}
+			UpdateAlerts(DatabaseURL, alert)
 		}
-
-		log.Println("Done")
 	default:
 		log.Printf("Received %s request", r.Method)
 	}
