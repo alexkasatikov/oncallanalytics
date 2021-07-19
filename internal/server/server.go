@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/alexkasatikov/oncallstats/internal/webhook"
+	"github.com/alexkasatikov/oncallstats/internal/app"
 	"github.com/namsral/flag"
 )
 
@@ -18,11 +18,11 @@ func InitServer() {
 
 	// Inject variables into another package
 	var DatabaseURL = config.DatabaseURL
-	webhook.DatabaseURL = DatabaseURL
+	app.DatabaseURL = DatabaseURL
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/alertmanager", webhook.AlertmanagerHandler)
-	mux.HandleFunc("/opsgenie", webhook.OpsgenieHandler)
+	mux.HandleFunc("/alertmanager", app.AlertmanagerHandler)
+	mux.HandleFunc("/opsgenie", app.OpsgenieHandler)
 
 	log.Println("Server started")
 

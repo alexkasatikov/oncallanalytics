@@ -1,4 +1,4 @@
-package webhook
+package app
 
 import (
 	"net/http"

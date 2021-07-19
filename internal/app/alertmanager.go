@@ -1,4 +1,4 @@
-package webhook
+package app
 
 import (
 	"encoding/json"
@@ -50,13 +50,44 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, a := range group.Alerts {
+
+			// TODO: need to make key:value pair uniq across lables map
+			labels := make(map[string]string)
+
+			for key, val := range group.GroupLabels {
+				labels[key] = val
+			}
+
+			for key, val := range group.CommonLabels {
+				labels[key] = val
+			}
+
+			for key, val := range a.Labels {
+				labels[key] = val
+			}
+
 			alert := Alert{
 				Status:      a.Status,
 				StartsAt:    a.StartsAt,
 				EndsAt:      a.EndsAt,
 				Fingerprint: a.Fingerprint,
 			}
-			UpdateAlerts(DatabaseURL, alert)
+			log.Println(alert.Status)
+
+			switch alert.Status {
+			case "firing":
+				alertId := UpdateAlerts(DatabaseURL, alert)
+				labelsIds := UpdateLabels(DatabaseURL, labels)
+
+				log.Println(alertId)
+				log.Println(labelsIds)
+
+			case "resolved":
+				UpdateAlerts(DatabaseURL, alert)
+			default:
+				log.Println("Unexpected alert status")
+			}
+
 		}
 	default:
 		log.Printf("Received %s request", r.Method)
