@@ -72,7 +72,6 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 				EndsAt:      a.EndsAt,
 				Fingerprint: a.Fingerprint,
 			}
-			log.Println(alert.Status)
 
 			switch alert.Status {
 			case "firing":

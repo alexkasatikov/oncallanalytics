@@ -29,8 +29,16 @@ func UpdateAlerts(dsn string, alert Alert) uint64 {
 		err = row.Scan(&id)
 
 		if err != nil {
-			log.Printf("Unable to INSERT new alert: %v\n", err)
-			id = 0
+			query := "SELECT id FROM alerts WHERE fingerprint = $1"
+			row := conn.QueryRow(context.Background(),
+				query,
+				alert.Fingerprint)
+
+			err = row.Scan(&id)
+
+			if err != nil {
+				log.Printf("Unable to find alert in database: %v\n", err)
+			}
 		}
 	} else {
 		query := "UPDATE alerts SET (status, endsat) = ($1, $2) WHERE fingerprint = $3 RETURNING id"
@@ -64,14 +72,22 @@ func UpdateLabels(dsn string, labels map[string]string) []uint64 {
 			labelsQuery,
 			key, val)
 
-		var labelId uint64
-		err = labelsRow.Scan(&labelId)
+		var id uint64
+		err = labelsRow.Scan(&id)
 
 		if err != nil {
-			log.Printf("Unable to INSERT new label: %v\n", err)
-			labelsIds = append(labelsIds, 0)
+			query := "SELECT id FROM labels WHERE key = $1 and value = $2"
+			row := conn.QueryRow(context.Background(),
+				query,
+				key, val)
+
+			err = row.Scan(&id)
+
+			if err != nil {
+				log.Printf("Unable to find label in database: %v\n", err)
+			}
 		}
-		labelsIds = append(labelsIds, labelId)
+		labelsIds = append(labelsIds, id)
 	}
 
 	return labelsIds
