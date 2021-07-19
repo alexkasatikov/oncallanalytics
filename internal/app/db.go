@@ -65,11 +65,11 @@ func UpdateLabels(dsn string, labels map[string]string) []uint64 {
 	}
 	defer conn.Close()
 
-	labelsQuery := "INSERT INTO labels (key, value) VALUES ($1, $2) RETURNING id"
+	query := "INSERT INTO labels (key, value) VALUES ($1, $2) RETURNING id"
 	var labelsIds []uint64
 	for key, val := range labels {
 		labelsRow := conn.QueryRow(context.Background(),
-			labelsQuery,
+			query,
 			key, val)
 
 		var id uint64
@@ -89,6 +89,28 @@ func UpdateLabels(dsn string, labels map[string]string) []uint64 {
 		}
 		labelsIds = append(labelsIds, id)
 	}
-
 	return labelsIds
+}
+
+func UpdateAlertsLabels(dsn string, alertId uint64, labelsIds []uint64) {
+	conn, err := pgxpool.Connect(context.Background(), dsn)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	defer conn.Close()
+
+	query := "INSERT INTO alerts_labels (alert_id, label_id) VALUES ($1, $2) RETURNING id"
+	for _, val := range labelsIds {
+		row := conn.QueryRow(context.Background(),
+			query,
+			alertId, val)
+
+		var id uint64
+		err = row.Scan(&id)
+		if err != nil {
+			//log.Printf("Unable to INSERT alerts_labels: %v\n", err)
+			//id = 0
+		}
+	}
 }

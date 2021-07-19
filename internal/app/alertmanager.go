@@ -50,8 +50,6 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, a := range group.Alerts {
-
-			// TODO: need to make key:value pair uniq across lables map
 			labels := make(map[string]string)
 
 			for key, val := range group.GroupLabels {
@@ -78,8 +76,9 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 				alertId := UpdateAlerts(DatabaseURL, alert)
 				labelsIds := UpdateLabels(DatabaseURL, labels)
 
-				log.Println(alertId)
-				log.Println(labelsIds)
+				//log.Println(alertId)
+				//log.Println(labelsIds)
+				UpdateAlertsLabels(DatabaseURL, alertId, labelsIds)
 
 			case "resolved":
 				UpdateAlerts(DatabaseURL, alert)

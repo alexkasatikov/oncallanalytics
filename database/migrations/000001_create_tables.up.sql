@@ -13,9 +13,10 @@ CREATE TABLE "labels" (
   UNIQUE (key, value)
 );
 CREATE TABLE "alerts_labels" (
+  "id" serial PRIMARY KEY,
   "alert_id" int NOT NULL,
   "label_id" int NOT NULL,
-  PRIMARY KEY (alert_id, label_id),
+  UNIQUE (alert_id, label_id),
   FOREIGN KEY (alert_id) REFERENCES alerts(id),
   FOREIGN KEY (label_id) REFERENCES labels(id)
 );
