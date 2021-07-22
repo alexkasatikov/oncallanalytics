@@ -3,6 +3,7 @@ CREATE TABLE "alerts" (
   "fingerprint" varchar NOT NULL,
   "status" varchar NOT NULL,
   "startsat" timestamptz NOT NULL,
+  "pushedat" timestamptz NOT NULL,
   "endsat" timestamptz,
   UNIQUE (fingerprint)
 );

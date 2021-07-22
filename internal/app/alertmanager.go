@@ -32,6 +32,7 @@ type Alert struct {
 	Status      string
 	StartsAt    time.Time
 	EndsAt      time.Time
+	PushedAt    time.Time
 }
 
 func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +70,7 @@ func AlertmanagerHandler(w http.ResponseWriter, r *http.Request) {
 				StartsAt:    a.StartsAt,
 				EndsAt:      a.EndsAt,
 				Fingerprint: a.Fingerprint,
+				PushedAt:    time.Now(),
 			}
 
 			switch alert.Status {

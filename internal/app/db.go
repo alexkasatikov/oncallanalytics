@@ -21,10 +21,10 @@ func UpdateAlerts(dsn string, alert Alert) uint64 {
 	var id uint64
 
 	if alert.Status == "firing" {
-		query := "INSERT INTO alerts (fingerprint, status, startsat, endsat) VALUES ($1, $2, $3, $4) RETURNING id"
+		query := "INSERT INTO alerts (fingerprint, status, startsat, endsat, pushedat) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 		row := conn.QueryRow(context.Background(),
 			query,
-			alert.Fingerprint, alert.Status, alert.StartsAt, alert.EndsAt)
+			alert.Fingerprint, alert.Status, alert.StartsAt, alert.EndsAt, alert.PushedAt)
 
 		err = row.Scan(&id)
 
